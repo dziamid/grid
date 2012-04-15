@@ -3,7 +3,4 @@ app/logs/*
 app/bootstrap*
 
 vendor/*
-web/bundles/*
-web/js/*
-
 
