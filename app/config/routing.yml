@@ -1,7 +1,7 @@
 BGridBundle:
     resource: "@BGridBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /grid
 
 # Internal routing configuration to handle ESI
 #_internal:
