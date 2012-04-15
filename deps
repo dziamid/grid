@@ -61,3 +61,11 @@
     git=http://github.com/symfony/AsseticBundle.git
     target=/bundles/Symfony/Bundle/AsseticBundle
     version=v1.0.1
+
+[knockout]
+    git=git://github.com/SteveSanderson/knockout.git
+    target=../app/Resources/public/js/vendor/knockout
+
+[knockout-mapping]
+    git=git://github.com/SteveSanderson/knockout.mapping.git
+    target=../app/Resources/public/js/vendor/knockout-mapping
