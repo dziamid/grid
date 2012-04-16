@@ -1,0 +1,47 @@
+.grid {
+    display: table;
+}
+
+.grid .head {
+    display: table-header-group;
+}
+
+.grid .body {
+    display: table-row-group;
+}
+
+.grid .row {
+    display: table-row;
+}
+
+.grid .row > div {
+    display: table-cell;
+    padding: 2px 4px;
+}
+.grid .head .row,
+.grid .row:nth-child(even) {
+    background-color: #D2E0E6;
+}
+
+.text {
+    width: 200px;
+    text-align: left;
+}
+
+.numbers {
+    width: 80px;
+    text-align: right;
+}
+
+.actions {
+    width: 80px;
+}
+
+.clickable {
+    cursor: pointer;
+    color: blue;
+}
+
+.grid input[type=text] {
+    width: 100%;
+}

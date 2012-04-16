@@ -1,23 +1,47 @@
 {% extends 'BGridBundle::layout.html.twig' %}
 
 {% block body %}
-<table>
+<div class="grid">
+    <div class="head">
+        <div class="row">
+            <div class="text">Title</div>
+            <div class="numbers">Price</div>
+            <div class="numbers">Amount</div>
+            <div></div>
+        </div>
+    </div>
+    <div class="body" data-bind="foreach: PriceItems">
+        <!-- ko if: inViewMode -->
+        <div class="row">
+            <div class="text" data-bind="text: title"></div>
+            <div class="numbers" data-bind="text: price"></div>
+            <div class="numbers" data-bind="text: amount"></div>
+            <div class="actions">
+                <span class="action clickable" data-bind="click: edit">Edit</span>
+            </div>
+        </div>
+        <!-- /ko -->
 
-    <thead>
-        <tr>
-            <td>Title</td>
-            <td>Price</td>
-            <td>Amount</td>
-        </tr>
-    </thead>
-    <tbody data-bind="foreach: PriceItems">
-        <tr>
-            <td data-bind="text: title"></td>
-            <td data-bind="text: price"></td>
-            <td data-bind="text: amount"></td>
-        </tr>
-    </tbody>
-</table>
+        <!-- ko ifnot: inViewMode -->
+        <div class="row">
+            <div class="text">
+                <input type="text" data-bind="value: title">
+            </div>
+            <div class="numbers">
+                <input type="text" data-bind="value: price">
+            </div>
+            <div class="numbers">
+                <input type="text" data-bind="value: amount">
+            </div>
+            <div class="actions">
+                <span class="action clickable" data-bind="click: save">Save</span>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+
+</div>
+
 {% endblock %}
 
 {% block app_config %}

@@ -3,10 +3,16 @@ var PriceItem = function (data) {
     self.title = data.title;
     self.price = ko.observable(data.price);
     self.amount = ko.observable(data.amount);
-
+    self.inViewMode = ko.observable(data.inViewMode || true);
+    self.edit = function() {
+        self.inViewMode(false);
+    };
+    self.save = function() {
+        self.inViewMode(true);
+    };
 };
 
-function MenuViewModel(config) {
+function PriceViewModel(config) {
     var self = this;
 
     self.PriceItems = ko.observableArray([
@@ -25,4 +31,4 @@ function MenuViewModel(config) {
     self.preload();
 }
 
-ko.applyBindings(new MenuViewModel(App.Config));
+ko.applyBindings(new PriceViewModel(App.Config));
