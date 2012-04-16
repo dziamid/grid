@@ -1,6 +1,11 @@
 var PriceItem = function (data) {
     var self = this;
-    self.title = data.title;
+    if (data.id === undefined) {
+        data.id = ko.generateId();
+    }
+
+    self.id = ko.observable(data.id);
+    self.title = ko.observable(data.title);
     self.price = ko.observable(data.price);
     self.amount = ko.observable(data.amount);
     self.inViewMode = ko.observable(data.inViewMode || true);

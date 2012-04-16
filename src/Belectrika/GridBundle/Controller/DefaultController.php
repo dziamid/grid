@@ -24,8 +24,8 @@ class DefaultController extends Controller
     public function itemsActions()
     {
         $items = array();
-        for ($i=1; $i<100; $i++) {
-            $items[] = array('title' => "Item {$i}", 'price' => $i*4560, 'amount' => $i*123);
+        for ($i=1; $i<10; $i++) {
+            $items[] = array('id' => $i, 'title' => "Item {$i}", 'price' => $i*4560, 'amount' => $i*123);
         }
         return new Response(json_encode($items));
     }
