@@ -1,0 +1,13 @@
+body {
+    font-family: Helvetica, "Helvetica Neue";
+    background-color:#528CE0;
+
+}
+.body {
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 20px 40px;
+    margin: 40px;
+}

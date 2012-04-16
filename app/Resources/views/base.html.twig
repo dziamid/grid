@@ -3,12 +3,25 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+
+        {% stylesheets
+             'app/css/app.css'
+             'bundles/bgrid/css/grid.css'
+         %}
+        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
+        {% endstylesheets %}
+
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
-
+        <div class="body">
+            {% block body %}{% endblock %}
+        </div>
+        <script type="text/javascript">
+            var App = {};
+            App.Config = {};
+            {% block app_config %}{% endblock %}
+        </script>
         {% javascripts
              'app/js/vendor/jquery-1.7.2.js'
              'app/js/vendor/knockout/build/output/knockout-latest.debug.js'
