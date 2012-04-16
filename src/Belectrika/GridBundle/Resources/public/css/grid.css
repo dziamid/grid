@@ -35,6 +35,11 @@
 
 .actions {
     width: 80px;
+    visibility: hidden;
+}
+.grid .actions .static,
+.grid .row:hover .actions {
+    visibility: visible;
 }
 
 .clickable {
