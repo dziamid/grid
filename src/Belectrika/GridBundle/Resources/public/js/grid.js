@@ -1,7 +1,8 @@
 var PriceItem = function (data) {
     var self = this;
-    self.protectedObservables = ['title', 'price', 'amount'];
-    ko.utils.arrayForEach(self.protectedObservables, function (name) {
+    self.editable = ['title', 'price', 'amount'];
+    self.serializable = Array.concat(['id'], self.editable);
+    ko.utils.arrayForEach(self.editable, function (name) {
         self[name] = ko.protectedObservable(data[name]);
     });
     if (data.id === undefined) {
@@ -15,18 +16,26 @@ var PriceItem = function (data) {
         self.inViewMode(false);
     };
 
-    self.commit = function () {
-        ko.utils.arrayForEach(self.protectedObservables, function (name) {
-            self[name].commit();
-        });
-        self.inViewMode(true);
-    };
     self.reset = function () {
-        ko.utils.arrayForEach(self.protectedObservables, function (name) {
+        ko.utils.arrayForEach(self.editable, function (name) {
             self[name].reset();
         });
         self.inViewMode(true);
     }
+};
+
+PriceItem.prototype.toJSON = function() {
+
+    var object = ko.toJS(this); //easy way to get a clean copy
+
+    var selectedProperties = {};
+
+    ko.utils.arrayForEach(object.serializable, function (name) {
+        selectedProperties[name] = object[name];
+    });
+
+    return selectedProperties; //return the copy to be serialized
+
 };
 
 function PriceViewModel(config) {
@@ -42,6 +51,17 @@ function PriceViewModel(config) {
                 var item = new PriceItem(data[i]);
                 self.PriceItems.push(item);
             }
+        });
+    };
+
+    self.saveItem = function (item) {
+        ko.utils.arrayForEach(item.editable, function (name) {
+            item[name].commit();
+        });
+        item.inViewMode(true);
+
+        $.post(config.url, ko.toJSON(item), function (data) {
+            //success
         });
     };
 
