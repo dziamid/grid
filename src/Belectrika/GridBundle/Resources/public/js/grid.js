@@ -1,20 +1,32 @@
 var PriceItem = function (data) {
     var self = this;
+    self.protectedObservables = ['title', 'price', 'amount'];
+    ko.utils.arrayForEach(self.protectedObservables, function (name) {
+        self[name] = ko.protectedObservable(data[name]);
+    });
     if (data.id === undefined) {
         data.id = ko.generateId();
     }
 
     self.id = ko.observable(data.id);
-    self.title = ko.observable(data.title);
-    self.price = ko.observable(data.price);
-    self.amount = ko.observable(data.amount);
+
     self.inViewMode = ko.observable(data.inViewMode || true);
     self.edit = function() {
         self.inViewMode(false);
     };
-    self.save = function() {
+
+    self.commit = function () {
+        ko.utils.arrayForEach(self.protectedObservables, function (name) {
+            self[name].commit();
+        });
         self.inViewMode(true);
     };
+    self.reset = function () {
+        ko.utils.arrayForEach(self.protectedObservables, function (name) {
+            self[name].reset();
+        });
+        self.inViewMode(true);
+    }
 };
 
 function PriceViewModel(config) {
