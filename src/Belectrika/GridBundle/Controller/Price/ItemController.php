@@ -93,15 +93,15 @@ class ItemController extends Controller
     /**
      * Deletes a Price\Item entity.
      *
-     * @Route("/{id}/delete", name="price_item_delete")
-     * @Method("post")
+     * @Route("/", name="price_item_delete")
+     * @Method("delete")
      */
-    public function deleteAction($id)
+    public function deleteAction()
     {
+        $_entity = json_decode($this->getRequest()->getContent(), true);
+        $id = $_entity['id'];
         $form = $this->createDeleteForm($id);
-        $request = $this->getRequest();
-
-        $form->bindRequest($request);
+        $form->bind(array('id' => $id));
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
@@ -115,7 +115,7 @@ class ItemController extends Controller
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('price_item'));
+        return new Response(json_encode(array('success' => true)));
     }
 
     private function createDeleteForm($id)

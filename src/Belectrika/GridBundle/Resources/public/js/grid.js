@@ -96,6 +96,21 @@ function PriceViewModel(config) {
         item.inViewMode(false);
         self.PriceItems.push(item);
     };
+    self.deleteItem = function (item) {
+        if (confirm('Are you sure?')) {
+            self.PriceItems.remove(item);
+            $.ajax(config.url, {
+                data: ko.toJSON(item),
+                type: 'DELETE',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('item removed');
+                }
+
+            });
+        }
+
+    };
 
     self.preload();
 }
