@@ -23,6 +23,10 @@
     background-color: #D2E0E6;
 }
 
+.grid .row.isNew {
+    background-color: #DBFFB4;
+}
+
 .text {
     width: 200px;
     text-align: left;

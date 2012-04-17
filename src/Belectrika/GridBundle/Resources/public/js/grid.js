@@ -27,6 +27,10 @@ var PriceItem = function (data) {
         return self.title() + ' (' + self.id() + ')';
     });
 
+    self.isNew = ko.computed(function () {
+        return self.id() < 0;
+    });
+
 };
 
 PriceItem.prototype.toJSON = function() {

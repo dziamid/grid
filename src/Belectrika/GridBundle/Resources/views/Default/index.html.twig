@@ -17,7 +17,7 @@
 </div>
 
 <script id="viewItemTmpl" type="text/html">
-    <div class="row">
+    <div class="row" data-bind="css: {isNew: isNew()}">
         <div class="text" data-bind="text: title"></div>
         <div class="numbers" data-bind="text: price"></div>
         <div class="numbers" data-bind="text: amount"></div>
