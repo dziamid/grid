@@ -78,7 +78,15 @@ class ItemController extends Controller
         }
 
         $errors = $form->getErrors();
-        return new Response(json_encode(array('errors' => $errors)));
+        $children = $form->getChildren();
+        foreach ($children as $child) {
+          $errors = array_merge($errors, $child->getErrors());
+        }
+        $_errors = array();
+        foreach ($errors as $error) {
+            $_errors[] = $error->getMessageTemplate();
+        }
+        return new Response(json_encode(array('errors' => $_errors)));
     }
 
 

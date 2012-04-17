@@ -3,6 +3,7 @@
 namespace Belectrika\GridBundle\Entity\Price;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Belectrika\GridBundle\Entity\Price\Item
@@ -25,6 +26,7 @@ class Item
      * @var string $title
      *
      * @ORM\Column(name="title", type="string", length=1024)
+     * @Assert\NotBlank()
      */
     private $title;
 
@@ -32,6 +34,7 @@ class Item
      * @var float $price
      *
      * @ORM\Column(name="price", type="float")
+     * @Assert\NotBlank()
      */
     private $price;
 
@@ -39,6 +42,7 @@ class Item
      * @var integer $amount
      *
      * @ORM\Column(name="amount", type="integer")
+     * @Assert\NotBlank()
      */
     private $amount;
 

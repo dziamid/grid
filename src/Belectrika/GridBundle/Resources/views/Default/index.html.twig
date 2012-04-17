@@ -16,8 +16,10 @@
 
 </div>
 
+<button data-bind="click: createNewItem">Add</button>
+
 <script id="viewItemTmpl" type="text/html">
-    <div class="row" data-bind="css: {isNew: isNew()}">
+    <div class="row" data-bind="css: {isNew: isNew(), hasErrors: !isValid()}">
         <div class="text" data-bind="text: title"></div>
         <div class="numbers" data-bind="text: price"></div>
         <div class="numbers" data-bind="text: amount"></div>

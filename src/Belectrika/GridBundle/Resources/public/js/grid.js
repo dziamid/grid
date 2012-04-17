@@ -1,4 +1,5 @@
 var PriceItem = function (data) {
+    data = data || {};
     var self = this;
     self.editable = ['title', 'price', 'amount'];
     self.serializable = Array.concat(['id'], self.editable);
@@ -31,6 +32,8 @@ var PriceItem = function (data) {
         return self.id() < 0;
     });
 
+    self.isValid = ko.observable(true);
+
 };
 
 PriceItem.prototype.toJSON = function() {
@@ -50,9 +53,7 @@ PriceItem.prototype.toJSON = function() {
 function PriceViewModel(config) {
     var self = this;
 
-    self.PriceItems = ko.observableArray([
-        new PriceItem({title: 'Item title', price: 10500, amount: 10})
-    ]);
+    self.PriceItems = ko.observableArray([]);
 
     self.preload = function () {
         $.getJSON(config.url, function (data) {
@@ -72,7 +73,11 @@ function PriceViewModel(config) {
         $.post(config.url, ko.toJSON(item), function (data) {
             //TODO: handle errors, display some kind of flash
             //TODO: use mapping plugin?
+            if (data.errors) {
+                item.isValid(false);
+            }
             if (data.id) {
+                item.isValid(true);
                 item.id(data.id);
                 item.title(data.title);
                 item.price(data.price);
@@ -84,6 +89,12 @@ function PriceViewModel(config) {
 
     self.templateName = function (item) {
         return item.inViewMode() ? 'viewItemTmpl':'editItemTmpl';
+    };
+
+    self.createNewItem = function () {
+        var item = new PriceItem();
+        item.inViewMode(false);
+        self.PriceItems.push(item);
     };
 
     self.preload();
