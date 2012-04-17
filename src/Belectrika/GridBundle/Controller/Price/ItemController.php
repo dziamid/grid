@@ -22,6 +22,7 @@ class ItemController extends Controller
      * Lists all Price\Item entities.
      *
      * @Route("/", name="price_item")
+     * @Method("get")
      * @Template()
      */
     public function indexAction()
@@ -49,93 +50,37 @@ class ItemController extends Controller
     /**
      * Creates\Updates a Price\Item entity.
      *
-     * @Route("/", name="price_item_create")
+     * @Route("/", name="price_item_save")
      * @Method("post")
      */
-    public function createAction()
+    public function persistAction()
     {
-        $entity  = new Item();
-        $request = $this->getRequest();
-        $form    = $this->createForm(new ItemType(), $entity);
-        $form->bindRequest($request);
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $_entity = json_decode($this->getRequest()->getContent(), true);
+        if (($id = $_entity['id']) < 0) {
+            $entity = new Item();
+        } else {
+            $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
+        }
+
+        //unset extra fields
+        unset($_entity['id']);
+        $form = $this->createForm(new ItemType(), $entity);
+        $form->bind($_entity);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('price_item_show', array('id' => $entity->getId())));
+            return new Response(json_encode($this->serializeItem($entity)));
         }
 
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView()
-        );
+        $errors = $form->getErrors();
+        return new Response(json_encode(array('errors' => $errors)));
     }
 
-    /**
-     * Displays a form to edit an existing Price\Item entity.
-     *
-     * @Route("/{id}/edit", name="price_item_edit")
-     * @Template()
-     */
-    public function editAction($id)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-
-        $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Price\Item entity.');
-        }
-
-        $editForm = $this->createForm(new ItemType(), $entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
-
-    /**
-     * Edits an existing Price\Item entity.
-     *
-     * @Route("/{id}/update", name="price_item_update")
-     * @Method("post")
-     * @Template("BGridBundle:Price\Item:edit.html.twig")
-     */
-    public function updateAction($id)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-
-        $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Price\Item entity.');
-        }
-
-        $editForm   = $this->createForm(new ItemType(), $entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        $request = $this->getRequest();
-
-        $editForm->bindRequest($request);
-
-        if ($editForm->isValid()) {
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('price_item_edit', array('id' => $id)));
-        }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
 
     /**
      * Deletes a Price\Item entity.

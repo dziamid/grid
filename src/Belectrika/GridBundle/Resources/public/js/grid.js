@@ -21,7 +21,12 @@ var PriceItem = function (data) {
             self[name].reset();
         });
         self.inViewMode(true);
-    }
+    };
+
+    self.label = ko.computed(function () {
+        return self.title() + ' (' + self.id() + ')';
+    });
+
 };
 
 PriceItem.prototype.toJSON = function() {
@@ -61,8 +66,16 @@ function PriceViewModel(config) {
         item.inViewMode(true);
 
         $.post(config.url, ko.toJSON(item), function (data) {
-            //success
-        });
+            //TODO: handle errors, display some kind of flash
+            //TODO: use mapping plugin?
+            if (data.id) {
+                item.id(data.id);
+                item.title(data.title);
+                item.price(data.price);
+                item.amount(data.amount);
+            }
+
+        }, 'json');
     };
 
     self.templateName = function (item) {
