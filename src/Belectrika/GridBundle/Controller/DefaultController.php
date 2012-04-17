@@ -17,33 +17,7 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return array('url' => $this->get('router')->generate('itemsList'));
+        return array('url' => $this->get('router')->generate('price_item'));
     }
 
-    /**
-     * @Route("/items", name="itemsList")
-     * @Method("GET")
-     */
-    public function itemsListAction()
-    {
-        $items = array();
-        for ($i=1; $i<10; $i++) {
-            $items[] = array('id' => $i, 'title' => "Item {$i}", 'price' => $i*4560, 'amount' => $i*123);
-        }
-        return new Response(json_encode($items));
-    }
-
-    /**
-     * @Route("/items")
-     * @Method("POST")
-     */
-    public function saveItemAction()
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-
-        $_item = json_decode($this->getRequest()->getContent(), true);
-        $_id = $_item['id'];
-
-        return new Response(json_encode($_item));
-    }
 }
