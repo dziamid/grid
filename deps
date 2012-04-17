@@ -64,11 +64,9 @@
 
 [knockout]
     git=git://github.com/SteveSanderson/knockout.git
-    target=../app/Resources/public/js/vendor/knockout
 
 [knockout-mapping]
     git=git://github.com/SteveSanderson/knockout.mapping.git
-    target=../app/Resources/public/js/vendor/knockout-mapping
 
 [doctrine-fixtures]
     git=git://github.com/doctrine/data-fixtures.git
