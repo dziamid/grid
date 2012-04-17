@@ -45,6 +45,10 @@ function PriceViewModel(config) {
         });
     };
 
+    self.templateName = function (item) {
+        return item.inViewMode() ? 'viewItemTmpl':'editItemTmpl';
+    };
+
     self.preload();
 }
 

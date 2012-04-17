@@ -10,38 +10,40 @@
             <div></div>
         </div>
     </div>
-    <div class="body" data-bind="foreach: PriceItems">
-        <!-- ko if: inViewMode -->
-        <div class="row">
-            <div class="text" data-bind="text: title"></div>
-            <div class="numbers" data-bind="text: price"></div>
-            <div class="numbers" data-bind="text: amount"></div>
-            <div class="actions">
-                <span class="action clickable" data-bind="click: edit">Edit</span>
-            </div>
-        </div>
-        <!-- /ko -->
+    <div class="body" data-bind="template: {name: templateName, foreach: PriceItems}">
 
-        <!-- ko ifnot: inViewMode -->
-        <div class="row">
-            <div class="text">
-                <input type="text" data-bind="value: title">
-            </div>
-            <div class="numbers">
-                <input type="text" data-bind="value: price">
-            </div>
-            <div class="numbers">
-                <input type="text" data-bind="value: amount">
-            </div>
-            <div class="actions">
-                <span class="action clickable static" data-bind="click: commit">Save</span>
-                <span class="action clickable static" data-bind="click: reset">Cancel</span>
-            </div>
-        </div>
-        <!-- /ko -->
     </div>
 
 </div>
+
+<script id="viewItemTmpl" type="text/html">
+    <div class="row">
+        <div class="text" data-bind="text: title"></div>
+        <div class="numbers" data-bind="text: price"></div>
+        <div class="numbers" data-bind="text: amount"></div>
+        <div class="actions">
+            <span class="action clickable" data-bind="click: edit">Edit</span>
+        </div>
+    </div>
+</script>
+
+<script id="editItemTmpl" type="text/html">
+    <div class="row">
+        <div class="text">
+            <input type="text" data-bind="value: title">
+        </div>
+        <div class="numbers">
+            <input type="text" data-bind="value: price">
+        </div>
+        <div class="numbers">
+            <input type="text" data-bind="value: amount">
+        </div>
+        <div class="actions">
+            <span class="action clickable static" data-bind="click: commit">Save</span>
+            <span class="action clickable static" data-bind="click: reset">Cancel</span>
+        </div>
+    </div>
+</script>
 
 {% endblock %}
 
