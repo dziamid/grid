@@ -41,7 +41,7 @@ class Changelog
 
     /**
      * @ORM\ManyToOne(targetEntity="\Belectrika\GridBundle\Entity\Price\Item", inversedBy="changelogs")
-     * @ORM\JoinColumn(name="item_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="item_id_fkey", referencedColumnName="id", onDelete="SET NULL")
      */
     private $item;
 
