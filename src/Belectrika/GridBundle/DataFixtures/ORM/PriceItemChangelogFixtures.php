@@ -15,8 +15,7 @@ class PriceItemChangelogFixtures extends AbstractFixture implements FixtureInter
         $item = $this->getReference('item-with-changes');
 
         $log = new Changelog();
-        $log->setType(Changelog::TYPE_CREATE);
-        $log->setCreated(new \DateTime('tomorrow'));
+        $log->setType(Changelog::TYPE_UPDATE);
         $log->setItem($item);
         $manager->persist($log);
 

@@ -112,7 +112,24 @@ function PriceViewModel(config) {
 
     };
 
+    self.pollChanges = function () {
+        $.get(config.url_poll, function (data) {
+            console.log(data);
+//            for (var i=0; i<data.length; i++) {
+//                var item = new PriceItem(data[i]);
+//                self.PriceItems.push(item);
+//            }
+        }, 'json');
+    };
+
+    self.pollEnabled = ko.observable(false);
+
     self.preload();
+    setInterval(function () {
+        return self.pollEnabled() && self.pollChanges();
+    }, 5000);
+    //start polling changes
+
 }
 
 ko.applyBindings(new PriceViewModel(App.Config));

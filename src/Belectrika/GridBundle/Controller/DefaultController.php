@@ -17,7 +17,10 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return array('url' => $this->get('router')->generate('price_item'));
+        return array(
+            'url' => $this->get('router')->generate('price_item'),
+            'url_changelogs' => $this->get('router')->generate('price_item_changelogs'),
+        );
     }
 
 }

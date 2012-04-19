@@ -37,6 +37,25 @@ class ItemController extends Controller
         return new Response(json_encode($items));
     }
 
+
+    /**
+     * Get list of change logs with related items (exept for deleted changelog)
+     *
+     * @Route("/changelogs", name="price_item_changelogs")
+     * @Method("get")
+     */
+    public function changelogsAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $qb = $em->getRepository('BGridBundle:Price\Item\Changelog')->getLatestQ();
+        $changelogs = $qb->getQuery()->getResult();
+        $_changelogs = array();
+        foreach ($changelogs as $changelog) {
+            $_changelogs[] = $this->serializeChangelog($changelog);
+        }
+        return new Response(json_encode($_changelogs));
+    }
+
     protected function serializeItem($entity)
     {
         return array(
@@ -44,6 +63,17 @@ class ItemController extends Controller
             'title' => $entity->getTitle(),
             'amount' => $entity->getAmount(),
             'price' => $entity->getPrice(),
+        );
+    }
+
+    protected function serializeChangelog($entity)
+    {
+        return array(
+            'id' => $entity->getId(),
+            'type' => $entity->getType(),
+            'item_id' => $entity->getItemId(),
+            'created' => $entity->getCreated()->format('Y-m-d H:i:s'),
+            'item' => $this->serializeItem($entity->getItem()),
         );
     }
 
@@ -117,6 +147,7 @@ class ItemController extends Controller
 
         return new Response(json_encode(array('success' => true)));
     }
+
 
     private function createDeleteForm($id)
     {

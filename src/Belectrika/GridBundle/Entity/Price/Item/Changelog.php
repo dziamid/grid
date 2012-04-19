@@ -45,6 +45,17 @@ class Changelog
      */
     private $item;
 
+    /**
+     * @var integer $itemId
+     *
+     * @ORM\Column(name="item_id", type="integer")
+     */
+    private $itemId;
+
+    public function __construct()
+    {
+        $this->setCreated(new \DateTime('now'));
+    }
 
     /**
      * Get id
@@ -104,6 +115,7 @@ class Changelog
     public function setItem(\Belectrika\GridBundle\Entity\Price\Item $item)
     {
         $this->item = $item;
+        $this->itemId = $item->getId();
     }
 
     /**
@@ -114,5 +126,25 @@ class Changelog
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set itemId
+     *
+     * @param integer $itemId
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+    }
+
+    /**
+     * Get itemId
+     *
+     * @return integer 
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
     }
 }

@@ -12,4 +12,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class ChangelogRepository extends EntityRepository
 {
+    /**
+     * Get changelogs qb for the last $period seconds
+     *
+     * @param int $period
+     */
+    public function getLatestQ($period = 5)
+    {
+        return $this->createQueryBuilder('l')
+            ->leftJoin('l.item', 'i')
+            ->where('l.created > ?1')
+            ->orderBy('l.created')
+            ->setParameter('1', new \DateTime(sprintf('%s seconds ago', $period)));
+    }
 }

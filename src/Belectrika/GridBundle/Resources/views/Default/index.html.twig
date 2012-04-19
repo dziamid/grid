@@ -17,6 +17,9 @@
 </div>
 
 <button data-bind="click: createNewItem">Add</button>
+<label for="poll-changes">
+    Poll changes: <input id="poll-changes" type="checkbox" data-bind="checked: pollEnabled">
+</label>
 
 <script id="viewItemTmpl" type="text/html">
     <div class="row" data-bind="css: {isNew: isNew(), hasErrors: !isValid()}">
@@ -53,4 +56,5 @@
 {% block app_config %}
     {{ parent() }}
     App.Config.url = "{{ url }}";
+    App.Config.url_poll = "{{ url_changelogs }}";
 {% endblock %}
