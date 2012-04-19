@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Belectrika\GridBundle\Entity\Price\Item;
+use Belectrika\GridBundle\Entity\Price\Item\Changelog;
 use Belectrika\GridBundle\Form\Price\ItemType;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -67,13 +68,17 @@ class ItemController extends Controller
 
     protected function serializeChangelog($entity)
     {
-        return array(
+        $changelog = array(
             'id'      => $entity->getId(),
             'type'    => $entity->getType(),
             'item_id' => $entity->getItemId(),
             'created' => $entity->getCreated()->format('Y-m-d H:i:s'),
-            'item'    => $this->serializeItem($entity->getItem()),
         );
+        if ($item = $entity->getItem()) {
+            $changelog['item'] = $this->serializeItem($item);
+        }
+
+        return $changelog;
     }
 
     /**
@@ -84,8 +89,6 @@ class ItemController extends Controller
      */
     public function createAction()
     {
-        $em = $this->getDoctrine()->getEntityManager();
-
         $_entity = json_decode($this->getRequest()->getContent(), true);
         $entity = new Item();
 
@@ -96,8 +99,7 @@ class ItemController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
-            $em->persist($entity);
-            $em->flush();
+            $this->persistItem($entity, Changelog::TYPE_CREATE);
 
             return new Response(json_encode($this->serializeItem($entity)));
         }
@@ -134,9 +136,8 @@ class ItemController extends Controller
         $form->bind($_entity);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
-            $em->persist($entity);
-            $em->flush();
+
+            $this->persistItem($entity, Changelog::TYPE_UPDATE);
 
             return new Response(json_encode($this->serializeItem($entity)));
         }
@@ -161,21 +162,22 @@ class ItemController extends Controller
      */
     public function deleteAction()
     {
+        $em = $this->getDoctrine()->getEntityManager();
+
         $_entity = json_decode($this->getRequest()->getContent(), true);
         $id = $_entity['id'];
         $form = $this->createDeleteForm($id);
         $form->bind(array('id' => $id));
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
             $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Price\Item entity.');
+                return new Response(json_encode(array('errors' => array(
+                    'Unable to find Price\Item entity.'
+                ))));
             }
-
-            $em->remove($entity);
-            $em->flush();
+            $this->persistItem($entity, Changelog::TYPE_DELETE);
         }
 
         return new Response(json_encode(array('success' => true)));
@@ -186,5 +188,35 @@ class ItemController extends Controller
         return $this->createFormBuilder(array('id' => $id))
             ->add('id', 'hidden')
             ->getForm();
+    }
+
+    /**
+     * Persist item in the database and log operation
+     *
+     * @param $item \Belectrika\GridBundle\Entity\Price\Item
+     * @param $type integer operation type
+     * @throws Exception
+     */
+    protected function persistItem($item, $type)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $changelog = new Changelog();
+        $changelog->setType($type);
+        $em->getConnection()->beginTransaction();
+
+        if ($type == Changelog::TYPE_DELETE) {
+            $changelog->setItemId($item->getId());
+            $em->remove($item);
+        } else {
+            $em->persist($item);
+            $em->flush();
+            $changelog->setItem($item);
+            $changelog->setItemId($item->getId());
+        }
+        $em->persist($changelog);
+        $em->flush();
+
+        $em->getConnection()->commit();
     }
 }
