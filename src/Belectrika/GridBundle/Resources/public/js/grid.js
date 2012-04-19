@@ -13,7 +13,7 @@ var PriceItem = function (data) {
     self.id = ko.observable(data.id);
 
     self.inViewMode = ko.observable(data.inViewMode || true);
-    self.edit = function() {
+    self.edit = function () {
         self.inViewMode(false);
     };
 
@@ -36,7 +36,7 @@ var PriceItem = function (data) {
 
 };
 
-PriceItem.prototype.toJSON = function() {
+PriceItem.prototype.toJSON = function () {
 
     var object = ko.toJS(this); //easy way to get a clean copy
 
@@ -56,12 +56,12 @@ function PriceViewModel(config) {
     self.PriceItems = ko.observableArray([]);
 
     self.preload = function () {
-        $.getJSON(config.url, function (data) {
-            for (var i=0; i<data.length; i++) {
+        $.get(config.url, function (data) {
+            for (var i = 0; i < data.length; i++) {
                 var item = new PriceItem(data[i]);
                 self.PriceItems.push(item);
             }
-        });
+        }, 'json');
     };
 
     self.saveItem = function (item) {
@@ -70,25 +70,60 @@ function PriceViewModel(config) {
         });
         item.inViewMode(true);
 
-        $.post(config.url, ko.toJSON(item), function (data) {
-            //TODO: handle errors, display some kind of flash
-            //TODO: use mapping plugin?
-            if (data.errors) {
-                item.isValid(false);
-            }
-            if (data.id) {
-                item.isValid(true);
-                item.id(data.id);
-                item.title(data.title);
-                item.price(data.price);
-                item.amount(data.amount);
-            }
-
-        }, 'json');
+        item.isNew() ? self.createItem(item) : self.updateItem(item);
     };
 
+    self.createItem = function (item) {
+
+        $.ajax(config.url, {
+            data: ko.toJSON(item),
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                //TODO: handle errors, display some kind of flash
+                //TODO: use mapping plugin?
+                if (data.errors) {
+                    item.isValid(false);
+                }
+                if (data.id) {
+                    item.isValid(true);
+                    item.id(data.id);
+                    item.title(data.title);
+                    item.price(data.price);
+                    item.amount(data.amount);
+                }
+
+            }
+        });
+    };
+
+    self.updateItem = function (item) {
+
+        $.ajax(config.url, {
+            data: ko.toJSON(item),
+            type: 'put',
+            dataType: 'json',
+            success: function (data) {
+                //TODO: handle errors, display some kind of flash
+                //TODO: use mapping plugin?
+                if (data.errors) {
+                    item.isValid(false);
+                }
+                if (data.id) {
+                    item.isValid(true);
+                    item.id(data.id);
+                    item.title(data.title);
+                    item.price(data.price);
+                    item.amount(data.amount);
+                }
+
+            }
+        });
+    };
+
+
     self.templateName = function (item) {
-        return item.inViewMode() ? 'viewItemTmpl':'editItemTmpl';
+        return item.inViewMode() ? 'viewItemTmpl' : 'editItemTmpl';
     };
 
     self.createNewItem = function () {

@@ -37,7 +37,6 @@ class ItemController extends Controller
         return new Response(json_encode($items));
     }
 
-
     /**
      * Get list of change logs with related items (exept for deleted changelog)
      *
@@ -59,40 +58,36 @@ class ItemController extends Controller
     protected function serializeItem($entity)
     {
         return array(
-            'id' => $entity->getId(),
-            'title' => $entity->getTitle(),
+            'id'     => $entity->getId(),
+            'title'  => $entity->getTitle(),
             'amount' => $entity->getAmount(),
-            'price' => $entity->getPrice(),
+            'price'  => $entity->getPrice(),
         );
     }
 
     protected function serializeChangelog($entity)
     {
         return array(
-            'id' => $entity->getId(),
-            'type' => $entity->getType(),
+            'id'      => $entity->getId(),
+            'type'    => $entity->getType(),
             'item_id' => $entity->getItemId(),
             'created' => $entity->getCreated()->format('Y-m-d H:i:s'),
-            'item' => $this->serializeItem($entity->getItem()),
+            'item'    => $this->serializeItem($entity->getItem()),
         );
     }
 
     /**
-     * Creates\Updates a Price\Item entity.
+     * Creates a Price\Item entity.
      *
-     * @Route("/", name="price_item_save")
+     * @Route("/")
      * @Method("post")
      */
-    public function persistAction()
+    public function createAction()
     {
         $em = $this->getDoctrine()->getEntityManager();
 
         $_entity = json_decode($this->getRequest()->getContent(), true);
-        if (($id = $_entity['id']) < 0) {
-            $entity = new Item();
-        } else {
-            $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
-        }
+        $entity = new Item();
 
         //unset extra fields
         unset($_entity['id']);
@@ -110,7 +105,7 @@ class ItemController extends Controller
         $errors = $form->getErrors();
         $children = $form->getChildren();
         foreach ($children as $child) {
-          $errors = array_merge($errors, $child->getErrors());
+            $errors = array_merge($errors, $child->getErrors());
         }
         $_errors = array();
         foreach ($errors as $error) {
@@ -119,11 +114,49 @@ class ItemController extends Controller
         return new Response(json_encode(array('errors' => $_errors)));
     }
 
+    /**
+     * Updates a Price\Item entity.
+     *
+     * @Route("/")
+     * @Method("put")
+     */
+    public function updateAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $_entity = json_decode($this->getRequest()->getContent(), true);
+        $id = $_entity['id'];
+        $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
+
+        //unset extra fields
+        unset($_entity['id']);
+        $form = $this->createForm(new ItemType(), $entity);
+        $form->bind($_entity);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getEntityManager();
+            $em->persist($entity);
+            $em->flush();
+
+            return new Response(json_encode($this->serializeItem($entity)));
+        }
+
+        $errors = $form->getErrors();
+        $children = $form->getChildren();
+        foreach ($children as $child) {
+            $errors = array_merge($errors, $child->getErrors());
+        }
+        $_errors = array();
+        foreach ($errors as $error) {
+            $_errors[] = $error->getMessageTemplate();
+        }
+        return new Response(json_encode(array('errors' => $_errors)));
+    }
 
     /**
      * Deletes a Price\Item entity.
      *
-     * @Route("/", name="price_item_delete")
+     * @Route("/")
      * @Method("delete")
      */
     public function deleteAction()
@@ -136,7 +169,7 @@ class ItemController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
             $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
-            
+
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Price\Item entity.');
             }
@@ -148,12 +181,10 @@ class ItemController extends Controller
         return new Response(json_encode(array('success' => true)));
     }
 
-
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))
             ->add('id', 'hidden')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }
