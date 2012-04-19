@@ -12,6 +12,13 @@ class PriceItemFixtures extends AbstractFixture implements FixtureInterface, Ord
 {
     public function load(ObjectManager $manager)
     {
+        $item = new Item();
+        $item->setTitle('Item-with-changes');
+        $item->setPrice(100);
+        $item->setAmount(100);
+        $this->setReference('item-with-changes', $item);
+        $manager->persist($item);
+
         for ($i=1; $i<10; $i++) {
             $item = new Item();
             $item->setTitle("Item {$i}");

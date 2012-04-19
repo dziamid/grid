@@ -106,7 +106,7 @@ class ItemController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
             $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
-
+            
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Price\Item entity.');
             }

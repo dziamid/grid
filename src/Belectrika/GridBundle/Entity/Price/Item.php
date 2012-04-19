@@ -46,6 +46,11 @@ class Item
      */
     private $amount;
 
+    /**
+     * @ORM\OneToMany(targetEntity="\Belectrika\GridBundle\Entity\Price\Item\Changelog", mappedBy="item")
+     */
+    private $changelogs;
+
 
     /**
      * Get id
@@ -115,5 +120,29 @@ class Item
     public function getAmount()
     {
         return $this->amount;
+    }
+    public function __construct()
+    {
+        $this->changelogs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add changelogs
+     *
+     * @param Belectrika\GridBundle\Entity\Price\Item\Changelog $changelogs
+     */
+    public function addChangelog(\Belectrika\GridBundle\Entity\Price\Item\Changelog $changelogs)
+    {
+        $this->changelogs[] = $changelogs;
+    }
+
+    /**
+     * Get changelogs
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getChangelogs()
+    {
+        return $this->changelogs;
     }
 }
