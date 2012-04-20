@@ -71,7 +71,7 @@ class ItemController extends Controller
         $changelog = array(
             'id'      => $entity->getId(),
             'type'    => $entity->getType(),
-            'item_id' => $entity->getItemId(),
+            'itemId'  => $entity->getItemId(),
             'created' => $entity->getCreated()->format('Y-m-d H:i:s'),
         );
         if ($item = $entity->getItem()) {

@@ -17,7 +17,7 @@ class ChangelogRepository extends EntityRepository
      *
      * @param int $period
      */
-    public function getLatestQ($period = 5)
+    public function getLatestQ($period = 10)
     {
         return $this->createQueryBuilder('l')
             ->leftJoin('l.item', 'i')

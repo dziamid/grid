@@ -16,7 +16,7 @@
 
 </div>
 
-<button data-bind="click: createNewItem">Add</button>
+<button data-bind="click: showCreateItemForm">Add</button>
 <label for="poll-changes">
     Poll changes: <input id="poll-changes" type="checkbox" data-bind="checked: pollEnabled">
 </label>
@@ -28,7 +28,7 @@
         <div class="numbers" data-bind="text: amount"></div>
         <div class="actions">
             <span class="action clickable" data-bind="click: edit">Edit</span>
-            <span class="action clickable" data-bind="click: $root.deleteItem">Del</span>
+            <span class="action clickable" data-bind="click: $root.showDeleteItemForm">Del</span>
         </div>
     </div>
 </script>
@@ -45,7 +45,7 @@
             <input type="text" data-bind="value: amount">
         </div>
         <div class="actions">
-            <span class="action clickable static" data-bind="click: $root.saveItem">Save</span>
+            <span class="action clickable static" data-bind="click: $root.persistItem">Save</span>
             <span class="action clickable static" data-bind="click: reset">Cancel</span>
         </div>
     </div>

@@ -64,17 +64,33 @@ function PriceViewModel(config) {
         }, 'json');
     };
 
-    self.saveItem = function (item) {
+    self.persistItem = function (item) {
         ko.utils.arrayForEach(item.editable, function (name) {
             item[name].commit();
         });
         item.inViewMode(true);
 
-        item.isNew() ? self.createItem(item) : self.updateItem(item);
+        item.isNew() ? self.persistCreateItem(item) : self.persistUpdateItem(item);
     };
 
-    self.createItem = function (item) {
+    self.findItem = function(id) {
+        return ko.utils.arrayFirst(self.PriceItems(), function (item) {
+            return id == item.id();
+        });
+    };
 
+    self.mapItem = function(item, data) {
+        item.id(data.id);
+        item.title(data.title);
+        item.price(data.price);
+        item.amount(data.amount);
+        //hmm
+        ko.utils.arrayForEach(item.editable, function (name) {
+            item[name].commit();
+        });
+    };
+
+    self.persistCreateItem = function (item) {
         $.ajax(config.url, {
             data: ko.toJSON(item),
             type: 'post',
@@ -87,17 +103,13 @@ function PriceViewModel(config) {
                 }
                 if (data.id) {
                     item.isValid(true);
-                    item.id(data.id);
-                    item.title(data.title);
-                    item.price(data.price);
-                    item.amount(data.amount);
+                    self.mapItem(item, data);
                 }
-
             }
         });
     };
 
-    self.updateItem = function (item) {
+    self.persistUpdateItem = function (item) {
 
         $.ajax(config.url, {
             data: ko.toJSON(item),
@@ -111,12 +123,8 @@ function PriceViewModel(config) {
                 }
                 if (data.id) {
                     item.isValid(true);
-                    item.id(data.id);
-                    item.title(data.title);
-                    item.price(data.price);
-                    item.amount(data.amount);
+                    self.mapItem(item, data);
                 }
-
             }
         });
     };
@@ -126,20 +134,30 @@ function PriceViewModel(config) {
         return item.inViewMode() ? 'viewItemTmpl' : 'editItemTmpl';
     };
 
-    self.createNewItem = function () {
+    self.createItem = function (data) {
+        var item = new PriceItem();
+        self.mapItem(item, data);
+        item.inViewMode(true);
+        self.PriceItems.push(item);
+    };
+    self.showCreateItemForm = function() {
         var item = new PriceItem();
         item.inViewMode(false);
         self.PriceItems.push(item);
     };
+
     self.deleteItem = function (item) {
+        self.PriceItems.remove(item);
+    };
+    self.showDeleteItemForm = function (item) {
         if (confirm('Are you sure?')) {
-            self.PriceItems.remove(item);
+            self.deleteItem(item);
             $.ajax(config.url, {
                 data: ko.toJSON(item),
                 type: 'DELETE',
                 dataType: 'json',
                 success: function (data) {
-                    console.log('item removed');
+                    //console.log('item removed');
                 }
 
             });
@@ -149,20 +167,33 @@ function PriceViewModel(config) {
 
     self.pollChanges = function () {
         $.get(config.url_poll, function (data) {
-            console.log(data);
-//            for (var i=0; i<data.length; i++) {
-//                var item = new PriceItem(data[i]);
-//                self.PriceItems.push(item);
-//            }
+            //console.log(data);
+            for (var i=0; i<data.length; i++) {
+                var changelog = data[i];
+                var item = self.findItem(changelog.itemId);
+                var itemData = changelog.item || false;
+                //if its update or delete, need to check if item still exists
+                //it may have been already deleted
+                if (changelog.type != 1 && !item) {
+                    continue;
+                }
+                if (changelog.type == 1) {
+                    self.createItem(itemData);
+                } else if (changelog.type == 2) {
+                    self.mapItem(item, itemData);
+                } else if (changelog.type == 3) {
+                    self.deleteItem(item);
+                }
+            }
         }, 'json');
     };
 
-    self.pollEnabled = ko.observable(false);
+    self.pollEnabled = ko.observable(true);
 
     self.preload();
     setInterval(function () {
         return self.pollEnabled() && self.pollChanges();
-    }, 5000);
+    }, 10000);
     //start polling changes
 
 }
