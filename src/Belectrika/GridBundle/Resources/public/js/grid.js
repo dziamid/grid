@@ -73,13 +73,13 @@ function PriceViewModel(config) {
         item.isNew() ? self.persistCreateItem(item) : self.persistUpdateItem(item);
     };
 
-    self.findItem = function(id) {
+    self.findItem = function (id) {
         return ko.utils.arrayFirst(self.PriceItems(), function (item) {
             return id == item.id();
         });
     };
 
-    self.mapItem = function(item, data) {
+    self.mapItem = function (item, data) {
         item.id(data.id);
         item.title(data.title);
         item.price(data.price);
@@ -92,7 +92,7 @@ function PriceViewModel(config) {
 
     self.persistCreateItem = function (item) {
         $.ajax(config.url, {
-            data: ko.toJSON(item),
+            data: ko.toJSON({'item': item, 'pageId': config.pageId}),
             type: 'post',
             dataType: 'json',
             success: function (data) {
@@ -112,7 +112,7 @@ function PriceViewModel(config) {
     self.persistUpdateItem = function (item) {
 
         $.ajax(config.url, {
-            data: ko.toJSON(item),
+            data: ko.toJSON({'item': item, 'pageId': config.pageId}),
             type: 'put',
             dataType: 'json',
             success: function (data) {
@@ -140,7 +140,7 @@ function PriceViewModel(config) {
         item.inViewMode(true);
         self.PriceItems.push(item);
     };
-    self.showCreateItemForm = function() {
+    self.showCreateItemForm = function () {
         var item = new PriceItem();
         item.inViewMode(false);
         self.PriceItems.push(item);
@@ -153,7 +153,7 @@ function PriceViewModel(config) {
         if (confirm('Are you sure?')) {
             self.deleteItem(item);
             $.ajax(config.url, {
-                data: ko.toJSON(item),
+                data: ko.toJSON({'item': item, 'pageId': config.pageId}),
                 type: 'DELETE',
                 dataType: 'json',
                 success: function (data) {
@@ -166,26 +166,31 @@ function PriceViewModel(config) {
     };
 
     self.pollChanges = function () {
-        $.get(config.url_poll, function (data) {
-            //console.log(data);
-            for (var i=0; i<data.length; i++) {
-                var changelog = data[i];
-                var item = self.findItem(changelog.itemId);
-                var itemData = changelog.item || false;
-                //if its update or delete, need to check if item still exists
-                //it may have been already deleted
-                if (changelog.type != 1 && !item) {
-                    continue;
-                }
-                if (changelog.type == 1) {
-                    self.createItem(itemData);
-                } else if (changelog.type == 2) {
-                    self.mapItem(item, itemData);
-                } else if (changelog.type == 3) {
-                    self.deleteItem(item);
+        $.ajax(config.url_poll, {
+            type: 'GET',
+            data: {'pageId': config.pageId},
+            dataType: 'json',
+            success: function (data) {
+                //console.log(data);
+                for (var i = 0; i < data.length; i++) {
+                    var changelog = data[i];
+                    var item = self.findItem(changelog.itemId);
+                    var itemData = changelog.item || false;
+                    //if its update or delete, need to check if item still exists
+                    //it may have been already deleted
+                    if (changelog.type != 1 && !item) {
+                        continue;
+                    }
+                    if (changelog.type == 1) {
+                        self.createItem(itemData);
+                    } else if (changelog.type == 2) {
+                        self.mapItem(item, itemData);
+                    } else if (changelog.type == 3) {
+                        self.deleteItem(item);
+                    }
                 }
             }
-        }, 'json');
+        });
     };
 
     self.pollEnabled = ko.observable(true);

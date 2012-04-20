@@ -46,9 +46,9 @@ class ItemController extends Controller
      */
     public function changelogsAction()
     {
+        $pageId = $this->getRequest()->get('pageId');
         $em = $this->getDoctrine()->getEntityManager();
-        $qb = $em->getRepository('BGridBundle:Price\Item\Changelog')->getLatestQ();
-        $changelogs = $qb->getQuery()->getResult();
+        $changelogs = $em->getRepository('BGridBundle:Price\Item\Changelog')->getLatestForPage($pageId);
         $_changelogs = array();
         foreach ($changelogs as $changelog) {
             $_changelogs[] = $this->serializeChangelog($changelog);
@@ -89,7 +89,11 @@ class ItemController extends Controller
      */
     public function createAction()
     {
-        $_entity = json_decode($this->getRequest()->getContent(), true);
+        //expectin json {item: {}, pageId: hash}
+        $data = json_decode($this->getRequest()->getContent(), true);
+        $_entity = $data['item'];
+        $pageId = $data['pageId'];
+
         $entity = new Item();
 
         //unset extra fields
@@ -99,7 +103,7 @@ class ItemController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
-            $this->persistItem($entity, Changelog::TYPE_CREATE);
+            $this->persistItem($entity, Changelog::TYPE_CREATE, $pageId);
 
             return new Response(json_encode($this->serializeItem($entity)));
         }
@@ -124,10 +128,13 @@ class ItemController extends Controller
      */
     public function updateAction()
     {
-        $em = $this->getDoctrine()->getEntityManager();
-
-        $_entity = json_decode($this->getRequest()->getContent(), true);
+        //expectin json {item: {}, pageId: hash}
+        $data = json_decode($this->getRequest()->getContent(), true);
+        $_entity = $data['item'];
         $id = $_entity['id'];
+        $pageId = $data['pageId'];
+
+        $em = $this->getDoctrine()->getEntityManager();
         $entity = $em->getRepository('BGridBundle:Price\Item')->find($id);
 
         //unset extra fields
@@ -137,7 +144,7 @@ class ItemController extends Controller
 
         if ($form->isValid()) {
 
-            $this->persistItem($entity, Changelog::TYPE_UPDATE);
+            $this->persistItem($entity, Changelog::TYPE_UPDATE, $pageId);
 
             return new Response(json_encode($this->serializeItem($entity)));
         }
@@ -162,10 +169,16 @@ class ItemController extends Controller
      */
     public function deleteAction()
     {
+        //expectin json {item: {}, pageId: hash}
+        $data = json_decode($this->getRequest()->getContent(), true);
+        $_entity = $data['item'];
+        $id = $_entity['id'];
+        $pageId = $data['pageId'];
+
         $em = $this->getDoctrine()->getEntityManager();
 
         $_entity = json_decode($this->getRequest()->getContent(), true);
-        $id = $_entity['id'];
+
         $form = $this->createDeleteForm($id);
         $form->bind(array('id' => $id));
 
@@ -177,7 +190,7 @@ class ItemController extends Controller
                     'Unable to find Price\Item entity.'
                 ))));
             }
-            $this->persistItem($entity, Changelog::TYPE_DELETE);
+            $this->persistItem($entity, Changelog::TYPE_DELETE, $pageId);
         }
 
         return new Response(json_encode(array('success' => true)));
@@ -197,12 +210,13 @@ class ItemController extends Controller
      * @param $type integer operation type
      * @throws Exception
      */
-    protected function persistItem($item, $type)
+    protected function persistItem($item, $type, $pageId)
     {
         $em = $this->getDoctrine()->getEntityManager();
 
         $changelog = new Changelog();
         $changelog->setType($type);
+        $changelog->setPageId($pageId);
         $em->getConnection()->beginTransaction();
 
         if ($type == Changelog::TYPE_DELETE) {

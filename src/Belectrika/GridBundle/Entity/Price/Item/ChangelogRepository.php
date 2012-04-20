@@ -15,14 +15,19 @@ class ChangelogRepository extends EntityRepository
     /**
      * Get changelogs qb for the last $period seconds
      *
-     * @param int $period
+     * @param string $pageId An id (unique hash) of page that requests for changes
+     * @param int $period A period of time in seconds
      */
-    public function getLatestQ($period = 10)
+    public function getLatestForPage($pageId, $period = 10)
     {
         return $this->createQueryBuilder('l')
             ->leftJoin('l.item', 'i')
             ->where('l.created > ?1')
+            ->andWhere('l.pageId != ?2')
             ->orderBy('l.created')
-            ->setParameter('1', new \DateTime(sprintf('%s seconds ago', $period)));
+            ->setParameter('1', new \DateTime(sprintf('%s seconds ago', $period)))
+            ->setParameter('2', $pageId)
+            ->getQuery()
+            ->getResult();
     }
 }

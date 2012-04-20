@@ -52,6 +52,13 @@ class Changelog
      */
     private $itemId;
 
+    /**
+     * @var integer $createdBy An id of a page that introduced a change
+     *
+     * @ORM\Column(name="page_id", type="string", length=255)
+     */
+    private $pageId;
+
     public function __construct()
     {
         $this->setCreated(new \DateTime('now'));
@@ -146,5 +153,25 @@ class Changelog
     public function getItemId()
     {
         return $this->itemId;
+    }
+
+    /**
+     * Set pageId
+     *
+     * @param string $pageId
+     */
+    public function setPageId($pageId)
+    {
+        $this->pageId = $pageId;
+    }
+
+    /**
+     * Get pageId
+     *
+     * @return string 
+     */
+    public function getPageId()
+    {
+        return $this->pageId;
     }
 }
