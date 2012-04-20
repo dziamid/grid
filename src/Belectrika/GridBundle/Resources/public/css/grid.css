@@ -42,12 +42,18 @@
 }
 
 .actions {
-    width: 80px;
+    width: 120px;
     visibility: hidden;
 }
 .grid .actions .static,
 .grid .row:hover .actions {
     visibility: visible;
+}
+.grid .action:hover {
+    color: #EE5757;
+}
+.grid .action:active {
+    color: #C20000;
 }
 
 .clickable {
