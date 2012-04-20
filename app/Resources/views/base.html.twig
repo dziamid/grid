@@ -17,18 +17,20 @@
         <div class="body">
             {% block body %}{% endblock %}
         </div>
-        <script type="text/javascript">
-            var App = {};
-            App.Config = {};
-            {% block app_config %}{% endblock %}
-        </script>
         {% javascripts
              'app/js/vendor/jquery-1.7.2.js'
              'knockout/knockout-latest.debug.js'
              'app/js/*'
-             'bundles/bgrid/js/grid.js'
+             'bundles/bgrid/js/*'
+
          %}
         <script src="{{ asset_url }}"></script>
+        <script type="text/javascript">
+            var App = {};
+            App.Config = {};
+            {% block app_config %}{% endblock %}
+
+        </script>
         {% endjavascripts %}
     </body>
 </html>

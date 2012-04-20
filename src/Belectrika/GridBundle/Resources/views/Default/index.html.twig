@@ -1,6 +1,8 @@
 {% extends 'BGridBundle::layout.html.twig' %}
 
 {% block body %}
+
+
 <div class="grid">
     <div class="head">
         <div class="row">
@@ -10,15 +12,15 @@
             <div></div>
         </div>
     </div>
-    <div class="body" data-bind="template: {name: templateName, foreach: PriceItems}">
+    <div class="body" data-bind="template: {name: items.templateName, foreach: items.PriceItems}">
 
     </div>
 
 </div>
 
-<button data-bind="click: showCreateItemForm">Add</button>
+<button data-bind="click: items.showCreateItemForm">Add</button>
 <label for="poll-changes">
-    Poll changes: <input id="poll-changes" type="checkbox" data-bind="checked: pollEnabled">
+    Poll changes: <input id="poll-changes" type="checkbox" data-bind="checked: items.pollEnabled">
 </label>
 
 <script id="viewItemTmpl" type="text/html">
@@ -28,7 +30,7 @@
         <div class="numbers" data-bind="text: amount"></div>
         <div class="actions">
             <span class="action clickable" data-bind="click: edit">Edit</span>
-            <span class="action clickable" data-bind="click: $root.showDeleteItemForm">Del</span>
+            <span class="action clickable" data-bind="click: $root.items.showDeleteItemForm">Del</span>
         </div>
     </div>
 </script>
@@ -45,7 +47,7 @@
             <input type="text" data-bind="value: amount">
         </div>
         <div class="actions">
-            <span class="action clickable static" data-bind="click: $root.persistItem">Save</span>
+            <span class="action clickable static" data-bind="click: $root.items.persistItem">Save</span>
             <span class="action clickable static" data-bind="click: reset">Cancel</span>
         </div>
     </div>
