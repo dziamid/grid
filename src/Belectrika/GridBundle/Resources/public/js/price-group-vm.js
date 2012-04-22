@@ -1,19 +1,22 @@
 Price.GroupVM = function(config) {
     var self = this;
-    self.content = ko.observableArray([
-        new Price.Group({title: 'Group 1'}),
-        new Price.Group({title: 'Group 2'}),
-        new Price.Group({title: 'Group 3'})
-    ]);
+    self.content = ko.observableArray([]);
 
     self.choose = function (group) {
         console.log(group.title);
     };
 
     self.preload = function () {
-        $.get(config.url.group, function (data) {
-
-        }, 'json');
+        $.ajax(config.url.group, {
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var item = new Price.Group(data[i]);
+                    self.content.push(item);
+                }
+            }
+        });
     };
 
 };

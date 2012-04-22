@@ -55,7 +55,7 @@ class Changelog
     /**
      * @var integer $createdBy An id of a page that introduced a change
      *
-     * @ORM\Column(name="page_id", type="string", length=255)
+     * @ORM\Column(name="page_id", type="string", length=255, nullable=true)
      */
     private $pageId;
 

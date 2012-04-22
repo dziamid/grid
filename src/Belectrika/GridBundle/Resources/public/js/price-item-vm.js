@@ -4,12 +4,16 @@ Price.ItemVM = function (config) {
     self.content = ko.observableArray([]);
 
     self.preload = function () {
-        $.get(config.url.item, function (data) {
-            for (var i = 0; i < data.length; i++) {
-                var item = new Price.Item(data[i]);
-                self.content.push(item);
+        $.ajax(config.url.item, {
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var item = new Price.Item(data[i]);
+                    self.content.push(item);
+                }
             }
-        }, 'json');
+        });
     };
 
     self.persistItem = function (item) {

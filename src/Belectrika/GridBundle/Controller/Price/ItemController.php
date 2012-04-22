@@ -9,7 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Belectrika\GridBundle\Entity\Price\Item;
 use Belectrika\GridBundle\Entity\Price\Item\Changelog;
 use Belectrika\GridBundle\Form\Price\ItemType;
-
 use Symfony\Component\HttpFoundation\Response;
 
 /**
