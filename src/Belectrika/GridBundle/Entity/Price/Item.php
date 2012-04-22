@@ -51,6 +51,11 @@ class Item
      */
     private $changelogs;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Belectrika\GridBundle\Entity\Price\Group", inversedBy="items")
+     */
+    private $group;
+
 
     /**
      * Get id
@@ -144,5 +149,25 @@ class Item
     public function getChangelogs()
     {
         return $this->changelogs;
+    }
+
+    /**
+     * Set group
+     *
+     * @param Belectrika\GridBundle\Entity\Price\Group $group
+     */
+    public function setGroup(\Belectrika\GridBundle\Entity\Price\Group $group)
+    {
+        $this->group = $group;
+    }
+
+    /**
+     * Get group
+     *
+     * @return Belectrika\GridBundle\Entity\Price\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 }
