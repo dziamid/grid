@@ -1,4 +1,4 @@
-var PriceItem = function (data) {
+Price.Item = function (data) {
     data = data || {};
     var self = this;
     self.editable = ['title', 'price', 'amount'];
@@ -35,7 +35,7 @@ var PriceItem = function (data) {
     self.isValid = ko.observable(true);
 
 };
-PriceItem.prototype.toJSON = function () {
+Price.Item.prototype.toJSON = function () {
 
     var object = ko.toJS(this); //easy way to get a clean copy
 

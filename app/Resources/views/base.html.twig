@@ -17,6 +17,12 @@
         <div class="body">
             {% block body %}{% endblock %}
         </div>
+        <script type="text/javascript">
+            var Price = {};
+            Price.config = {};
+            {% block app_config %}{% endblock %}
+
+        </script>
         {% javascripts
              'app/js/vendor/jquery-1.7.2.js'
              'knockout/knockout-latest.debug.js'
@@ -25,12 +31,9 @@
 
          %}
         <script src="{{ asset_url }}"></script>
-        <script type="text/javascript">
-            var App = {};
-            App.Config = {};
-            {% block app_config %}{% endblock %}
-
-        </script>
         {% endjavascripts %}
+
+
+
     </body>
 </html>

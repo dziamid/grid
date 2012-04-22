@@ -2,6 +2,11 @@
 
 {% block body %}
 
+<div class="groups">
+    <ul data-bind="foreach: groups.content">
+        <li><span class="action clickable" data-bind="click: $root.groups.choose, text: title"></span></li>
+    </ul>
+</div>
 
 <div class="grid">
     <div class="head">
@@ -12,7 +17,7 @@
             <div></div>
         </div>
     </div>
-    <div class="body" data-bind="template: {name: items.templateName, foreach: items.PriceItems}">
+    <div class="body" data-bind="template: {name: items.templateName, foreach: items.content}">
 
     </div>
 
@@ -56,8 +61,10 @@
 {% endblock %}
 
 {% block app_config %}
-    {{ parent() }}
-    App.Config.url = "{{ url }}";
-    App.Config.url_poll = "{{ url_changelogs }}";
-    App.Config.pageId = "{{ pageId }}";
+{{ parent() }}
+Price.config.url = {};
+Price.config.url.item = "{{ url_item }}";
+Price.config.url.group = "{{ url_group }}";
+Price.config.url.changelog = "{{ url_changelog }}";
+Price.config.pageId = "{{ page_id }}";
 {% endblock %}

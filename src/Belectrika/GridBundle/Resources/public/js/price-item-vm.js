@@ -1,13 +1,13 @@
-function PriceItemsVM(config) {
+Price.ItemVM = function (config) {
     var self = this;
 
-    self.PriceItems = ko.observableArray([]);
+    self.content = ko.observableArray([]);
 
     self.preload = function () {
-        $.get(config.url, function (data) {
+        $.get(config.url.item, function (data) {
             for (var i = 0; i < data.length; i++) {
-                var item = new PriceItem(data[i]);
-                self.PriceItems.push(item);
+                var item = new Price.Item(data[i]);
+                self.content.push(item);
             }
         }, 'json');
     };
@@ -22,7 +22,7 @@ function PriceItemsVM(config) {
     };
 
     self.findItem = function (id) {
-        return ko.utils.arrayFirst(self.PriceItems(), function (item) {
+        return ko.utils.arrayFirst(self.content(), function (item) {
             return id == item.id();
         });
     };
@@ -39,7 +39,7 @@ function PriceItemsVM(config) {
     };
 
     self.persistCreateItem = function (item) {
-        $.ajax(config.url, {
+        $.ajax(config.url.item, {
             data: ko.toJSON({'item': item, 'pageId': config.pageId}),
             type: 'post',
             dataType: 'json',
@@ -59,7 +59,7 @@ function PriceItemsVM(config) {
 
     self.persistUpdateItem = function (item) {
 
-        $.ajax(config.url, {
+        $.ajax(config.url.item, {
             data: ko.toJSON({'item': item, 'pageId': config.pageId}),
             type: 'put',
             dataType: 'json',
@@ -83,24 +83,24 @@ function PriceItemsVM(config) {
     };
 
     self.createItem = function (data) {
-        var item = new PriceItem();
+        var item = new Price.Item();
         self.mapItem(item, data);
         item.inViewMode(true);
-        self.PriceItems.push(item);
+        self.content.push(item);
     };
     self.showCreateItemForm = function () {
-        var item = new PriceItem();
+        var item = new Price.Item();
         item.inViewMode(false);
-        self.PriceItems.push(item);
+        self.content.push(item);
     };
 
     self.deleteItem = function (item) {
-        self.PriceItems.remove(item);
+        self.content.remove(item);
     };
     self.showDeleteItemForm = function (item) {
         if (confirm('Are you sure?')) {
             self.deleteItem(item);
-            $.ajax(config.url, {
+            $.ajax(config.url.item, {
                 data: ko.toJSON({'item': item, 'pageId': config.pageId}),
                 type: 'DELETE',
                 dataType: 'json',
@@ -114,7 +114,7 @@ function PriceItemsVM(config) {
     };
 
     self.pollChanges = function () {
-        $.ajax(config.url_poll, {
+        $.ajax(config.url.changelog, {
             type: 'GET',
             data: {'pageId': config.pageId},
             dataType: 'json',
@@ -142,12 +142,6 @@ function PriceItemsVM(config) {
     };
 
     self.pollEnabled = ko.observable(true);
-
-    self.preload();
-    setInterval(function () {
-        return self.pollEnabled() && self.pollChanges();
-    }, 10000);
-    //start polling changes
 
 }
 
