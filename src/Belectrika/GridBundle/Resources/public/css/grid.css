@@ -1,3 +1,26 @@
+.layout {
+
+}
+.layout:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.column {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin: 0;
+    float: left;
+}
+.groups.column {
+    width: 25%;
+}
+.items.column {
+    width: 75%;
+}
+
 .grid {
     display: table;
 }
