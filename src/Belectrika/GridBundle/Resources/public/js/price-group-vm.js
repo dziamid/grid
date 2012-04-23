@@ -17,6 +17,9 @@ Price.GroupVM = function(parent, config) {
     };
 
     self.select = function (group) {
+        if (self.isActive(group)) {
+            return;
+        }
         self.active(group);
     };
 

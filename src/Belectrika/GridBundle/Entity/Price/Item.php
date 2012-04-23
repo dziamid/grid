@@ -170,4 +170,9 @@ class Item
     {
         return $this->group;
     }
+
+    public function getGroupId()
+    {
+        return $this->getGroup()->getId();
+    }
 }

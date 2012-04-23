@@ -12,7 +12,7 @@ class PriceGroupFixtures extends AbstractFixture implements FixtureInterface, Or
 {
     public function load(ObjectManager $manager)
     {
-        for ($i = 1; $i < 4; $i++) {
+        for ($i = 1; $i <= 4; $i++) {
             $entity = new Group();
             $entity->setTitle("Group {$i}");
             $manager->persist($entity);

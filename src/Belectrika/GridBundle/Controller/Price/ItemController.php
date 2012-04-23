@@ -89,23 +89,27 @@ class ItemController extends Controller
      */
     public function createAction()
     {
+        $em = $this->getDoctrine()->getEntityManager();
+
         //expectin json {item: {}, pageId: hash}
         $data = json_decode($this->getRequest()->getContent(), true);
-        $_entity = $data['item'];
+        $_item = $data['item'];
         $pageId = $data['pageId'];
 
-        $entity = new Item();
+        $item = new Item();
+        $group = $em->getRepository('BGridBundle:Price\Group')->find($_item['groupId']);
+        $item->setGroup($group);
 
         //unset extra fields
-        unset($_entity['id']);
-        $form = $this->createForm(new ItemType(), $entity);
-        $form->bind($_entity);
+        unset($_item['id']);
+        unset($_item['groupId']);
+        $form = $this->createForm(new ItemType(), $item);
+        $form->bind($_item);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
-            $this->persistItem($entity, Changelog::TYPE_CREATE, $pageId);
+            $this->persistItem($item, Changelog::TYPE_CREATE, $pageId);
 
-            return new Response(json_encode($this->serializeItem($entity)));
+            return new Response(json_encode($this->serializeItem($item)));
         }
 
         $errors = $form->getErrors();

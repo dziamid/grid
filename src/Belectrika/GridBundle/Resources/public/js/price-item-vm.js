@@ -46,13 +46,12 @@ Price.ItemVM = function (parent, config) {
     };
 
     self.mapItem = function (item, data) {
+        //TODO: just loop through data and set on item
         item.id(data.id);
         item.title(data.title);
         item.price(data.price);
         item.amount(data.amount);
-        if (data.groupId) {
-            item.groupId(data.groupId);
-        }
+        item.groupId(data.groupId);
 
         //hmm
         ko.utils.arrayForEach(item.editable, function (name) {
@@ -112,6 +111,7 @@ Price.ItemVM = function (parent, config) {
     };
     self.showCreateItemForm = function () {
         var item = new Price.Item();
+        item.group(parent.activeGroup());
         item.inViewMode(false);
         self.content.push(item);
     };

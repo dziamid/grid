@@ -2,7 +2,7 @@ Price.Item = function (data) {
     data = data || {};
     var self = this;
     self.editable = ['title', 'price', 'amount'];
-    self.serializable = Array.concat(['id'], self.editable);
+    self.serializable = Array.concat(['id', 'groupId'], self.editable);
     ko.utils.arrayForEach(self.editable, function (name) {
         self[name] = ko.protectedObservable(data[name]);
     });
@@ -12,6 +12,9 @@ Price.Item = function (data) {
 
     self.id = ko.observable(data.id);
     self.groupId = ko.observable(data.groupId);
+    self.group = function(group) {
+        self.groupId(group.id());
+    };
 
     self.inViewMode = ko.observable(data.inViewMode || true);
     self.edit = function () {
