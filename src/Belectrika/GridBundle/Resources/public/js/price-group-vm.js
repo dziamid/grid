@@ -1,9 +1,23 @@
-Price.GroupVM = function(config) {
+Price.GroupVM = function(parent, config) {
     var self = this;
+    /**
+     * An array of all groups
+     *
+     */
     self.content = ko.observableArray([]);
 
-    self.choose = function (group) {
-        console.log(group.title);
+    /**
+     * Active (selected) group
+     *
+     */
+    self.active = ko.observable();
+
+    self.isActive = function(group) {
+        return self.active() && self.active().id == group.id;
+    };
+
+    self.select = function (group) {
+        self.active(group);
     };
 
     self.preload = function () {

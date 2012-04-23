@@ -4,7 +4,11 @@
 
 <div class="groups">
     <ul data-bind="foreach: groups.content">
-        <li><span class="action clickable" data-bind="click: $root.groups.choose, text: title"></span></li>
+        <li><span class="action" data-bind="
+                click: $root.groups.select,
+                text: title,
+                css: {clickable: !$root.groups.isActive($data)}
+            "></span></li>
     </ul>
 </div>
 
@@ -17,7 +21,7 @@
             <div></div>
         </div>
     </div>
-    <div class="body" data-bind="template: {name: items.templateName, foreach: items.content}">
+    <div class="body" data-bind="template: {name: items.templateName, foreach: items.active}">
 
     </div>
 

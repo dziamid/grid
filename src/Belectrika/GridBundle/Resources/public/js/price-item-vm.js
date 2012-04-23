@@ -1,7 +1,21 @@
-Price.ItemVM = function (config) {
+Price.ItemVM = function (parent, config) {
     var self = this;
 
+    /**
+     * All items
+     */
     self.content = ko.observableArray([]);
+
+    /**
+     * Items of active group
+     *
+     */
+    self.active = ko.computed(function () {
+        console.log('items.active called');
+        return ko.utils.arrayFilter(self.content(), function (i) {
+            return parent.activeGroup() && i.groupId() == parent.activeGroup().id();
+        });
+    });
 
     self.preload = function () {
         $.ajax(config.url.item, {
@@ -36,6 +50,10 @@ Price.ItemVM = function (config) {
         item.title(data.title);
         item.price(data.price);
         item.amount(data.amount);
+        if (data.groupId) {
+            item.groupId(data.groupId);
+        }
+
         //hmm
         ko.utils.arrayForEach(item.editable, function (name) {
             item[name].commit();

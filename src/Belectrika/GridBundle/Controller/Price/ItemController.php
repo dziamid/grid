@@ -62,6 +62,7 @@ class ItemController extends Controller
             'title'  => $entity->getTitle(),
             'amount' => $entity->getAmount(),
             'price'  => $entity->getPrice(),
+            'groupId' => $entity->getGroup()->getId(),
         );
     }
 

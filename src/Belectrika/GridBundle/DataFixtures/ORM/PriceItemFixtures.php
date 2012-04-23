@@ -16,6 +16,7 @@ class PriceItemFixtures extends AbstractFixture implements FixtureInterface, Ord
         $item->setTitle('Item-with-changes');
         $item->setPrice(100);
         $item->setAmount(100);
+        $item->setGroup($this->getReference('group-1'));
         $this->setReference('item-with-changes', $item);
         $manager->persist($item);
 
@@ -24,6 +25,8 @@ class PriceItemFixtures extends AbstractFixture implements FixtureInterface, Ord
             $item->setTitle("Item {$i}");
             $item->setPrice($i / 10);
             $item->setAmount($i * 2 + 1);
+            $groupId = rand(1,4);
+            $item->setGroup($this->getReference("group-{$groupId}"));
             $manager->persist($item);
         }
 
@@ -32,7 +35,7 @@ class PriceItemFixtures extends AbstractFixture implements FixtureInterface, Ord
 
     public function getOrder()
     {
-        return 1;
+        return 2;
     }
 
 }

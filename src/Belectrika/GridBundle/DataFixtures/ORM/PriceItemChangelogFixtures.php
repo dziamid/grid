@@ -24,7 +24,7 @@ class PriceItemChangelogFixtures extends AbstractFixture implements FixtureInter
 
     public function getOrder()
     {
-        return 2;
+        return 3;
     }
 
 }

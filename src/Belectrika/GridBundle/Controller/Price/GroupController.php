@@ -39,6 +39,7 @@ class GroupController extends Controller
     protected function serializeGroup($entity)
     {
         return array(
+            'id'    => $entity->getId(),
             'title' => $entity->getTitle(),
         );
     }

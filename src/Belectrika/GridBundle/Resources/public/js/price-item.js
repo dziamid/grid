@@ -11,6 +11,7 @@ Price.Item = function (data) {
     }
 
     self.id = ko.observable(data.id);
+    self.groupId = ko.observable(data.groupId);
 
     self.inViewMode = ko.observable(data.inViewMode || true);
     self.edit = function () {

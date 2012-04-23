@@ -16,6 +16,7 @@ class PriceGroupFixtures extends AbstractFixture implements FixtureInterface, Or
             $entity = new Group();
             $entity->setTitle("Group {$i}");
             $manager->persist($entity);
+            $this->setReference("group-{$i}", $entity);
         }
 
         $manager->flush();
@@ -23,7 +24,7 @@ class PriceGroupFixtures extends AbstractFixture implements FixtureInterface, Or
 
     public function getOrder()
     {
-        return 3;
+        return 1;
     }
 
 }
