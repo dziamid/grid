@@ -68,6 +68,9 @@
 [knockout-mapping]
     git=git://github.com/SteveSanderson/knockout.mapping.git
 
+[jquery-cookie]
+    git=git://github.com/carhartl/jquery-cookie.git
+
 [doctrine-fixtures]
     git=git://github.com/doctrine/data-fixtures.git
 

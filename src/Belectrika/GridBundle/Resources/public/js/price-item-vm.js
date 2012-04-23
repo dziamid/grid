@@ -11,7 +11,7 @@ Price.ItemVM = function (parent, config) {
      *
      */
     self.active = ko.computed(function () {
-        console.log('items.active called');
+        //console.log('items.active called');
         return ko.utils.arrayFilter(self.content(), function (i) {
             return parent.activeGroup() && i.groupId() == parent.activeGroup().id();
         });

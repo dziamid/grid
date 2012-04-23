@@ -2,7 +2,7 @@ Price.Item = function (data) {
     data = data || {};
     var self = this;
     self.editable = ['title', 'price', 'amount'];
-    self.serializable = Array.concat(['id', 'groupId'], self.editable);
+    self.serializable = ['id', 'groupId'].concat(self.editable);
     ko.utils.arrayForEach(self.editable, function (name) {
         self[name] = ko.protectedObservable(data[name]);
     });

@@ -12,6 +12,12 @@ Price.GroupVM = function(parent, config) {
      */
     self.active = ko.observable();
 
+    self.find = function (id) {
+        return ko.utils.arrayFirst(self.content(), function (g) {
+            return g.id() == id;
+        });
+    };
+
     self.isActive = function(group) {
         return self.active() && self.active().id == group.id;
     };
@@ -21,6 +27,7 @@ Price.GroupVM = function(parent, config) {
             return;
         }
         self.active(group);
+        $.cookie('selected-group-id', group.id(), { expires: 30*12 });
     };
 
     self.preload = function () {
@@ -32,8 +39,18 @@ Price.GroupVM = function(parent, config) {
                     var item = new Price.Group(data[i]);
                     self.content.push(item);
                 }
+                self.onPreload();
             }
         });
     };
+
+    self.onPreload = function () {
+        var groupId = $.cookie('selected-group-id');
+        var group = groupId && self.find(groupId);
+        if (group) {
+            self.select(group);
+        }
+    };
+
 
 };
