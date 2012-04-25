@@ -4,13 +4,17 @@
 
 <div class="layout">
     <div class="groups column">
-        <ul data-bind="foreach: groups.content">
-            <li><span class="action" data-bind="
-                    click: $root.groups.select,
-                    text: title,
-                    css: {clickable: !$root.groups.isActive($data)}
-                "></span></li>
-        </ul>
+        <div class="grid" data-bind="foreach: groups.content">
+            <div class="row">
+                <div class="text">
+                    <span class="action" data-bind="
+                        click: $root.groups.select,
+                        text: title,
+                        css: {clickable: !$root.groups.isActive($data)}
+                    "></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="items column">
         <div class="grid">

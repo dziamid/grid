@@ -15,14 +15,17 @@
     float: left;
 }
 .groups.column {
-    width: 25%;
+    width: 20%;
 }
 .items.column {
-    width: 75%;
+    width: 80%;
 }
 
 .grid {
     display: table;
+    border-collapse:separate;
+    border-spacing:2px;
+    width: 100%;
 }
 
 .grid .head {
@@ -42,8 +45,8 @@
     padding: 2px 4px;
 }
 .grid .head .row,
-.grid .row:nth-child(even) {
-    background-color: #D2E0E6;
+.grid .row {
+    background-color: #efefef;
 }
 
 .grid .row.isNew {
@@ -85,5 +88,5 @@
 }
 
 .grid input[type=text] {
-    width: 100%;
+    width: inherit;
 }
