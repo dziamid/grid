@@ -31,7 +31,7 @@ Price.ItemVM = function (parent, config) {
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     var itemData = data[i];
-                    var item = self.findItem(itemData['id']);
+                    var item = self.find(itemData['id']);
                     if (!item) {
                         item = new Price.Item(itemData);
                         self.content.push(item);
@@ -41,22 +41,22 @@ Price.ItemVM = function (parent, config) {
         });
     };
 
-    self.persistItem = function (item) {
+    self.persist = function (item) {
         ko.utils.arrayForEach(item.editable, function (name) {
             item[name].commit();
         });
         item.inViewMode(true);
 
-        item.isNew() ? self.persistCreateItem(item) : self.persistUpdateItem(item);
+        item.isNew() ? self.persistCreate(item) : self.persistUpdate(item);
     };
 
-    self.findItem = function (id) {
+    self.find = function (id) {
         return ko.utils.arrayFirst(self.content(), function (item) {
             return id == item.id();
         });
     };
 
-    self.mapItem = function (item, data) {
+    self.map = function (item, data) {
         //TODO: just loop through data and set on item
         item.id(data.id);
         item.title(data.title);
@@ -70,7 +70,7 @@ Price.ItemVM = function (parent, config) {
         });
     };
 
-    self.persistCreateItem = function (item) {
+    self.persistCreate = function (item) {
         $.ajax(config.url.item, {
             data: ko.toJSON({'item': item, 'pageId': config.pageId}),
             type: 'post',
@@ -83,13 +83,13 @@ Price.ItemVM = function (parent, config) {
                 }
                 if (data.id) {
                     item.isValid(true);
-                    self.mapItem(item, data);
+                    self.map(item, data);
                 }
             }
         });
     };
 
-    self.persistUpdateItem = function (item) {
+    self.persistUpdate = function (item) {
 
         $.ajax(config.url.item, {
             data: ko.toJSON({'item': item, 'pageId': config.pageId}),
@@ -103,7 +103,7 @@ Price.ItemVM = function (parent, config) {
                 }
                 if (data.id) {
                     item.isValid(true);
-                    self.mapItem(item, data);
+                    self.map(item, data);
                 }
             }
         });
@@ -114,25 +114,25 @@ Price.ItemVM = function (parent, config) {
         return item.inViewMode() ? 'viewItemTmpl' : 'editItemTmpl';
     };
 
-    self.createItem = function (data) {
+    self.create = function (data) {
         var item = new Price.Item();
-        self.mapItem(item, data);
+        self.map(item, data);
         item.inViewMode(true);
         self.content.push(item);
     };
-    self.showCreateItemForm = function () {
+    self.showCreateForm = function () {
         var item = new Price.Item();
         item.group(parent.activeGroup());
         item.inViewMode(false);
         self.content.push(item);
     };
 
-    self.deleteItem = function (item) {
+    self.delete = function (item) {
         self.content.remove(item);
     };
-    self.showDeleteItemForm = function (item) {
+    self.showDeleteForm = function (item) {
         if (confirm('Are you sure?')) {
-            self.deleteItem(item);
+            self.delete(item);
             $.ajax(config.url.item, {
                 data: ko.toJSON({'item': item, 'pageId': config.pageId}),
                 type: 'DELETE',
@@ -155,7 +155,7 @@ Price.ItemVM = function (parent, config) {
                 //console.log(data);
                 for (var i = 0; i < data.length; i++) {
                     var changelog = data[i];
-                    var item = self.findItem(changelog.itemId);
+                    var item = self.find(changelog.itemId);
                     var itemData = changelog.item || false;
                     //if its update or delete, need to check if item still exists
                     //it may have been already deleted
@@ -163,11 +163,11 @@ Price.ItemVM = function (parent, config) {
                         continue;
                     }
                     if (changelog.type == 1) {
-                        self.createItem(itemData);
+                        self.create(itemData);
                     } else if (changelog.type == 2) {
-                        self.mapItem(item, itemData);
+                        self.map(item, itemData);
                     } else if (changelog.type == 3) {
-                        self.deleteItem(item);
+                        self.delete(item);
                     }
                 }
             }

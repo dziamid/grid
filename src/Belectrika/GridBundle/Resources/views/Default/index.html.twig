@@ -29,7 +29,7 @@
             <div class="body" data-bind="template: {name: items.templateName, foreach: items.active}"></div>
         </div>
         <!-- ko if:$root.activeGroup -->
-        <button data-bind="click: items.showCreateItemForm">Add</button>
+        <button data-bind="click: items.showCreateForm">Add</button>
         <label for="poll-changes">
             Poll changes: <input id="poll-changes" type="checkbox" data-bind="checked: items.pollEnabled">
         </label>
@@ -44,7 +44,7 @@
         <div class="numbers" data-bind="text: amount"></div>
         <div class="actions">
             <span class="action clickable" data-bind="click: edit">Edit</span>
-            <span class="action clickable" data-bind="click: $root.items.showDeleteItemForm">Del</span>
+            <span class="action clickable" data-bind="click: $root.items.showDeleteForm">Del</span>
         </div>
     </div>
 </script>
@@ -61,7 +61,7 @@
             <input type="text" data-bind="value: amount">
         </div>
         <div class="actions">
-            <span class="action clickable static" data-bind="click: $root.items.persistItem">Save</span>
+            <span class="action clickable static" data-bind="click: $root.items.persist">Save</span>
             <span class="action clickable static" data-bind="click: reset">Cancel</span>
         </div>
     </div>
