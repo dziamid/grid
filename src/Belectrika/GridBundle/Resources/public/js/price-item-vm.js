@@ -191,16 +191,15 @@ Price.ItemVM = function (parent, config) {
                 for (var i = 0; i < data.length; i++) {
                     var changelog = data[i];
                     var item = self.find(changelog.itemId);
-                    var itemData = changelog.item || false;
                     //if its update or delete, need to check if item still exists
                     //it may have been already deleted
                     if (changelog.type != 1 && !item) {
                         continue;
                     }
                     if (changelog.type == 1) {
-                        self.create(itemData);
+                        self.create(changelog.item);
                     } else if (changelog.type == 2) {
-                        self.map(item, itemData);
+                        self.map(item, changelog.item);
                     } else if (changelog.type == 3) {
                         self.delete(item);
                     }
@@ -209,7 +208,14 @@ Price.ItemVM = function (parent, config) {
         });
     };
 
-    self.pollEnabled = ko.observable(true);
+    var pollEnabled = $.cookie('items-poll-enabled');
+    //get cookie value, fallback to config value
+    pollEnabled = pollEnabled !== null ? (pollEnabled === 'true') : config.pollEnabled;
+    self.pollEnabled = ko.observable(pollEnabled);
+    self.pollEnabled.subscribe(function (value) {
+        //cookies are strings only, so storing an integer instead of boolean
+        $.cookie('items-poll-enabled', value, { expires: 30 * 12 });
+    });
 
-}
+};
 
