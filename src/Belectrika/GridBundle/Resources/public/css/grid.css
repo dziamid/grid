@@ -42,7 +42,7 @@
 
 .grid .row > div {
     display: table-cell;
-    padding: 2px 4px;
+    padding: 2px 8px 2px 4px;
 }
 .grid .head .row,
 .grid .row {
@@ -88,5 +88,5 @@
 }
 
 .grid input[type=text] {
-    width: inherit;
+    width: 100%;
 }
