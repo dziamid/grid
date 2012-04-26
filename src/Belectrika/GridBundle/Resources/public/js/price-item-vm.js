@@ -17,14 +17,25 @@ Price.ItemVM = function (parent, config) {
         });
     });
 
-    self.preload = function () {
+    /**
+     * Preload items for given group
+     *
+     * @param groupId
+     */
+    self.preload = function (groupId) {
+
         $.ajax(config.url.item, {
             type: 'get',
             dataType: 'json',
+            data: {groupId: groupId},
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    var item = new Price.Item(data[i]);
-                    self.content.push(item);
+                    var itemData = data[i];
+                    var item = self.findItem(itemData['id']);
+                    if (!item) {
+                        item = new Price.Item(itemData);
+                        self.content.push(item);
+                    }
                 }
             }
         });

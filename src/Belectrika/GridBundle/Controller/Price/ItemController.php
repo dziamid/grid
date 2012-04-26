@@ -28,13 +28,13 @@ class ItemController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getEntityManager();
-
-        $entities = $em->getRepository('BGridBundle:Price\Item')->findAll();
-        $items = array();
-        foreach ($entities as $entity) {
-            $items[] = $this->serializeItem($entity);
+        $groupId = $this->getRequest()->get('groupId');
+        $items = $em->getRepository('BGridBundle:Price\Item')->getForGroup($groupId);
+        $_items = array();
+        foreach ($items as $item) {
+            $_items[] = $this->serializeItem($item);
         }
-        return new Response(json_encode($items));
+        return new Response(json_encode($_items));
     }
 
     /**

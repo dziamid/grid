@@ -4,9 +4,11 @@ Price.PageVM = function(config) {
     self.groups = new Price.GroupVM(self, config);
 
     self.activeGroup = self.groups.active;
+    self.activeGroup.subscribe(function(newGroup) {
+        self.items.preload(newGroup.id());
+    });
     self.preload = function () {
         self.groups.preload();
-        self.items.preload();
         setInterval(function () {
             return self.items.pollEnabled() && self.items.pollChanges();
         }, 10000);

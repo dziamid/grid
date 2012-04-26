@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class ItemRepository extends EntityRepository
 {
+    public function getForGroup($groupId)
+    {
+        $qb = $this->createQueryBuilder('i')
+            ->select('i')
+            ->innerJoin('i.group', 'g')
+            ->where('g.id = ?1')
+            ->setParameter('1', $groupId);
+
+        return $qb->getQuery()->getResult();
+    }
 }
