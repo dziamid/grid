@@ -143,6 +143,7 @@ class ItemController extends Controller
 
         //unset extra fields
         unset($_entity['id']);
+        unset($_entity['groupId']);
         $form = $this->createForm(new ItemType(), $entity);
         $form->bind($_entity);
 

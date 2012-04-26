@@ -6,6 +6,7 @@ Price.PageVM = function(config) {
     self.activeGroup = self.groups.active;
     self.activeGroup.subscribe(function(newGroup) {
         self.items.preload(newGroup.id());
+        self.items.cancelPending();
     });
     self.preload = function () {
         self.groups.preload();

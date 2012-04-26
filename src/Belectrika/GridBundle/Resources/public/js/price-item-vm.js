@@ -18,6 +18,12 @@ Price.ItemVM = function (parent, config) {
     });
 
     /**
+     * An array of items that are currently in edit mode
+     *
+     */
+    self.pending = ko.observableArray([]);
+
+    /**
      * Preload items for given group
      *
      * @param groupId
@@ -45,7 +51,7 @@ Price.ItemVM = function (parent, config) {
         ko.utils.arrayForEach(item.editable, function (name) {
             item[name].commit();
         });
-        item.inViewMode(true);
+        self.pending.remove(item);
 
         item.isNew() ? self.persistCreate(item) : self.persistUpdate(item);
     };
@@ -53,20 +59,6 @@ Price.ItemVM = function (parent, config) {
     self.find = function (id) {
         return ko.utils.arrayFirst(self.content(), function (item) {
             return id == item.id();
-        });
-    };
-
-    self.map = function (item, data) {
-        //TODO: just loop through data and set on item
-        item.id(data.id);
-        item.title(data.title);
-        item.price(data.price);
-        item.amount(data.amount);
-        item.groupId(data.groupId);
-
-        //hmm
-        ko.utils.arrayForEach(item.editable, function (name) {
-            item[name].commit();
         });
     };
 
@@ -111,27 +103,47 @@ Price.ItemVM = function (parent, config) {
 
 
     self.templateName = function (item) {
-        return item.inViewMode() ? 'viewItemTmpl' : 'editItemTmpl';
+        return self.isPending(item) ? 'editItemTmpl' : 'viewItemTmpl';
     };
 
     self.create = function (data) {
         var item = new Price.Item();
         self.map(item, data);
-        item.inViewMode(true);
         self.content.push(item);
     };
-    self.showCreateForm = function () {
-        var item = new Price.Item();
-        item.group(parent.activeGroup());
-        item.inViewMode(false);
-        self.content.push(item);
+
+    self.map = function (item, data) {
+        //TODO: just loop through data and set on item
+        item.id(data.id);
+        item.title(data.title);
+        item.price(data.price);
+        item.amount(data.amount);
+        item.groupId(data.groupId);
+
+        //hmm
+        ko.utils.arrayForEach(item.editable, function (name) {
+            item[name].commit();
+        });
     };
 
     self.delete = function (item) {
         self.content.remove(item);
     };
+
+    self.showCreateForm = function () {
+        var item = new Price.Item();
+        item.group(parent.activeGroup());
+        self.content.push(item);
+        self.pending.push(item);
+    };
+
+    self.showEditForm = function (item) {
+        self.pending.push(item);
+    };
+
     self.showDeleteForm = function (item) {
         if (confirm('Are you sure?')) {
+            self.pending.remove(item);
             self.delete(item);
             $.ajax(config.url.item, {
                 data: ko.toJSON({'item': item, 'pageId': config.pageId}),
@@ -143,7 +155,30 @@ Price.ItemVM = function (parent, config) {
 
             });
         }
+    };
 
+    self.cancel = function (item, remove) {
+        remove = typeof remove !== 'undefined' ? remove : true;
+        if (remove) {
+            self.pending.remove(item);
+        }
+
+        if (item.isNew()) {
+            self.delete(item);
+        }
+    };
+
+    self.cancelPending = function () {
+        ko.utils.arrayForEach(self.pending(), function (item) {
+            self.cancel(item, false);
+        });
+        self.pending.removeAll();
+    };
+
+    self.isPending = function (item) {
+        return ko.utils.arrayFirst(self.pending(), function (i) {
+            return i.id() == item.id();
+        });
     };
 
     self.pollChanges = function () {

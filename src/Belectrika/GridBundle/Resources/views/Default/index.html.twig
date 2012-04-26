@@ -43,7 +43,7 @@
         <div class="numbers" data-bind="text: price"></div>
         <div class="numbers" data-bind="text: amount"></div>
         <div class="actions">
-            <span class="action clickable" data-bind="click: edit">Edit</span>
+            <span class="action clickable" data-bind="click: $root.items.showEditForm">Edit</span>
             <span class="action clickable" data-bind="click: $root.items.showDeleteForm">Del</span>
         </div>
     </div>
@@ -62,7 +62,7 @@
         </div>
         <div class="actions">
             <span class="action clickable static" data-bind="click: $root.items.persist">Save</span>
-            <span class="action clickable static" data-bind="click: reset">Cancel</span>
+            <span class="action clickable static" data-bind="click: $root.items.cancel">Cancel</span>
         </div>
     </div>
 </script>

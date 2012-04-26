@@ -16,16 +16,10 @@ Price.Item = function (data) {
         self.groupId(group.id());
     };
 
-    self.inViewMode = ko.observable(data.inViewMode || true);
-    self.edit = function () {
-        self.inViewMode(false);
-    };
-
     self.reset = function () {
         ko.utils.arrayForEach(self.editable, function (name) {
             self[name].reset();
         });
-        self.inViewMode(true);
     };
 
     self.label = ko.computed(function () {
