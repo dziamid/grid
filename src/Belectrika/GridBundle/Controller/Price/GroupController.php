@@ -27,20 +27,27 @@ class GroupController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getEntityManager();
+        /** @var $rep \Belectrika\GridBundle\Entity\Price\GroupRepository */
+        $rep = $em->getRepository('BGridBundle:Price\Group');
+        $roots = $rep->getRootNodes();
 
-        $entities = $em->getRepository('BGridBundle:Price\Group')->findAll();
         $items = array();
-        foreach ($entities as $entity) {
-            $items[] = $this->serializeGroup($entity);
+        foreach ($roots as $root) {
+            $items[] = $this->serializeGroup($root);
         }
         return new Response(json_encode($items));
     }
 
     protected function serializeGroup($entity)
     {
+        $children = array();
+        foreach ($entity->getChildren() as $child) {
+            $children[] = $this->serializeGroup($child);
+        }
         return array(
             'id'    => $entity->getId(),
             'title' => $entity->getTitle(),
+            'children' => $children,
         );
     }
 

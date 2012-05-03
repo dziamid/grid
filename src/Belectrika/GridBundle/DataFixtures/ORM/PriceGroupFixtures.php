@@ -12,6 +12,15 @@ class PriceGroupFixtures extends AbstractFixture implements FixtureInterface, Or
 {
     public function load(ObjectManager $manager)
     {
+        $parent1 = new Group();
+        $parent1->setTitle("Parent Group 1");
+        $manager->persist($parent1);
+
+        $child1 = new Group();
+        $child1->setTitle("Child Group 1");
+        $child1->setParent($parent1);
+        $manager->persist($child1);
+
         for ($i = 1; $i <= 4; $i++) {
             $entity = new Group();
             $entity->setTitle("Group {$i}");

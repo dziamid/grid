@@ -4,17 +4,7 @@
 
 <div class="layout">
     <div class="groups column">
-        <div class="grid" data-bind="foreach: groups.content">
-            <div class="row">
-                <div class="text">
-                    <span class="action" data-bind="
-                        click: $root.groups.select,
-                        text: title,
-                        css: {clickable: !$root.groups.isActive($data)}
-                    "></span>
-                </div>
-            </div>
-        </div>
+        <div class="grid" data-bind="template: {name: 'viewGroupTmpl', foreach: groups.content}"></div>
     </div>
     <div class="items column">
         <div class="grid">
@@ -36,6 +26,19 @@
         <!-- /ko -->
     </div>
 </div>
+
+<script id="viewGroupTmpl" type="text/html">
+    <div class="row" data-bind="css: getLevelLabel">
+        <div class="text">
+            <span class="action" data-bind="
+                click: $root.groups.select,
+                text: title,
+                css: {clickable: !$root.groups.isActive($data)}
+            "></span>
+        </div>
+    </div>
+    <!-- ko template: {name: 'viewGroupTmpl', foreach: children} --><!-- /ko -->
+</script>
 
 <script id="viewItemTmpl" type="text/html">
     <div class="row" data-bind="css: {isNew: isNew(), hasErrors: !isValid()}">

@@ -77,3 +77,7 @@
 [DoctrineFixturesBundle]
     git=https://github.com/symfony/DoctrineFixturesBundle.git
     target=/bundles/Symfony/Bundle/DoctrineFixturesBundle
+
+[DoctrineExtensions]
+    git=git://github.com/l3pp4rd/DoctrineExtensions.git
+    target=/gedmo/doctrine-extensions
