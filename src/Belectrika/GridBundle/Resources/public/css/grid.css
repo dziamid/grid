@@ -39,6 +39,12 @@
 .grid .row {
     display: table-row;
 }
+.grid .row.level-1 > div {
+    padding-left: 20px;
+}
+.grid .row.level-2 > div {
+    padding-left: 40px;
+}
 
 .grid .row > div {
     display: table-cell;

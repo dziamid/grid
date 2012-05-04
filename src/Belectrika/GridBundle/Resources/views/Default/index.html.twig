@@ -28,7 +28,7 @@
 </div>
 
 <script id="viewGroupTmpl" type="text/html">
-    <div class="row" data-bind="css: getLevelLabel">
+    <div class="row" data-bind="css: {'level-1': level() == 1, 'level-2': level() == 2 }">
         <div class="text">
             <span class="action" data-bind="
                 click: $root.groups.select,

@@ -10,10 +10,6 @@ Price.Group = function (data, level) {
     self.title = data.title;
     self.level = ko.observable(level);
 
-    self.getLevelLabel = function () {
-        return 'level-'+self.level();
-    };
-
     self.children = ko.observableArray([]);
     for (var i = 0; i < data.children.length; i++) {
         var group = new Price.Group(data.children[i], 1);
