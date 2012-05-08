@@ -6,7 +6,7 @@ ko.generateId = function () {
 ko.protectedObservable = function (initialValue) {
     //private variables
     var _actualValue = ko.observable(initialValue);
-    var _tempValue = initialValue;
+    var _tempValue = ko.observable(initialValue);
 
     //dependentObservable that we will return
     var result = ko.dependentObservable({
@@ -16,7 +16,7 @@ ko.protectedObservable = function (initialValue) {
         },
         //stored in a temporary spot until commit
         write: function (newValue) {
-            _tempValue = newValue;
+            _tempValue(newValue);
         }
     });
 
@@ -30,7 +30,7 @@ ko.protectedObservable = function (initialValue) {
     //force subscribers to take original
     result.reset = function () {
         _actualValue.valueHasMutated();
-        _tempValue = _actualValue();   //reset temp value
+        _tempValue(actualValue());   //reset temp value
     };
 
     return result;
