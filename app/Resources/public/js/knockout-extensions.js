@@ -3,35 +3,36 @@ ko.generateId = function () {
 };
 
 //wrapper to an observable that requires accept/cancel
-ko.protectedObservable = function (initialValue) {
-    //private variables
-    var _actualValue = ko.observable(initialValue);
-    var _tempValue = ko.observable(initialValue);
+ko.protectedObservable = function (initial) {
+        //private variables
+        var _temp = ko.observable(initial);
+        var _actual = ko.observable(initial);
 
-    //dependentObservable that we will return
-    var result = ko.dependentObservable({
-        //always return the actual value
-        read: function () {
-            return _actualValue();
-        },
-        //stored in a temporary spot until commit
-        write: function (newValue) {
-            _tempValue(newValue);
-        }
-    });
+        var result = ko.dependentObservable({
+            read: function () {
+                return _actual();
+            },
+            write: function (newValue) {
+                _temp(newValue);
+            }
+        });
 
-    //if different, commit temp value
-    result.commit = function () {
-        if (_tempValue !== _actualValue()) {
-            _actualValue(_tempValue);
-        }
+        //commit the temporary value to our observable, if it is different
+        result.commit = function () {
+            var temp = _temp();
+            if (temp !== _actual()) {
+                _actual(temp);
+            }
+        };
+
+        //notify subscribers to update their value with the original
+        result.reset = function () {
+            _actual.valueHasMutated();
+            _temp(_actual());
+        };
+
+        //public property that stores value that is being edited
+        result.temp = _temp;
+
+        return result;
     };
-
-    //force subscribers to take original
-    result.reset = function () {
-        _actualValue.valueHasMutated();
-        _tempValue(actualValue());   //reset temp value
-    };
-
-    return result;
-};

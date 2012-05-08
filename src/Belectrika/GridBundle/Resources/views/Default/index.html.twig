@@ -55,13 +55,13 @@
 <script id="editItemTmpl" type="text/html">
     <div class="row">
         <div class="text">
-            <input type="text" data-bind="value: title">
+            <input type="text" data-bind="value: title.temp">
         </div>
         <div class="numbers">
-            <input type="text" data-bind="value: price">
+            <input type="text" data-bind="value: price.temp">
         </div>
         <div class="numbers">
-            <input type="text" data-bind="value: amount">
+            <input type="text" data-bind="value: amount.temp">
         </div>
         <div class="actions">
             <span class="action clickable static" data-bind="click: $root.items.persist">Save</span>
